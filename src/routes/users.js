@@ -1,6 +1,8 @@
 import express from 'express';
 const router = express.Router();
 import UserController from '../controllers/user.controller.js';
+import AuthMiddleware from '../auth.js/authGuard.js';
+import RoleMiddleware from '../auth.js/authRoleGuard.js';
 
 const controller = new UserController();
 
@@ -53,7 +55,7 @@ const controller = new UserController();
  *                 $ref: '#/components/schemas/User'
  */
 
-router.get('/', controller.getAll);
+router.get('/', RoleMiddleware('Admin'), controller.getAll);
 
 /**
  * @swagger
@@ -134,9 +136,9 @@ router.patch('/:id', controller.improveUser);
 
 /**
  * @swagger
- * /users:
+ * /users/signup:
  *   post:
- *     summary: Create a new user
+ *     summary: User registration
  *     tags: [Users]
  *     requestBody:
  *       required: true
@@ -146,14 +148,37 @@ router.patch('/:id', controller.improveUser);
  *             $ref: '#/components/schemas/User'
  *     responses:
  *       '201':
- *         description: User created successfully
+ *         description: User signet up successfully
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
  */
 
-router.post('/', controller.createUser);
+router.post('/signup', controller.signUp);
+
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     summary: User login
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       '201':
+ *         description: User signed in successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ */
+
+router.post('/login', controller.signIn);
 
 /**
  * @swagger

@@ -9,6 +9,7 @@ import sequelize from './db/orm-configs.js';
 
 import indexRouter from './src/routes/index.js';
 import usersRouter from './src/routes/users.js';
+import rolesRouter from './src/routes/roles.js';
 
 import * as models from './src/models/models.index.js';
 import * as services from './src/services/services.index.js';
@@ -48,12 +49,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/roles', rolesRouter);
 
 app.models = {
   users: models.usersModel,
+  roles: models.rolesModel,
+  userRoles: models.userRoleModel,
 };
 app.services = {
   users: new services.usersService(app.models),
+  roles: new services.rolesService(app.models),
 };
 
 app.use(function (req, res, next) {

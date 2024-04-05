@@ -2,8 +2,8 @@ class UserController {
   async getAll(req, res) {
     try {
       const users = await req.app.services.users.getAll();
-      const userCount = users.length;
-      res.json({ userCount, users });
+      const count = users.length;
+      res.json({ count, users });
     } catch (error) {
       res.status(404).json({
         status: 'fail',
@@ -28,11 +28,27 @@ class UserController {
     }
   }
 
-  async createUser(req, res) {
+  async signUp(req, res) {
     const user = req.body;
     try {
-      const createdUser = await req.app.services.users.createUser(user);
+      const createdUser = await req.app.services.users.signUp(user);
       res.json({ createdUser });
+    } catch (error) {
+      res.status(400).json({
+        status: 'fail',
+        message: error.message,
+      });
+    }
+  }
+
+  async signIn(req, res) {
+    const user = req.body;
+    try {
+      const login = await req.app.services.users.signIn(user);
+      res.status(201).json({
+        status: 'Success',
+        message: login,
+      });
     } catch (error) {
       res.status(400).json({
         status: 'fail',

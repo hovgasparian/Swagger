@@ -1,6 +1,8 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../../db/orm-configs.js';
 import * as bcrypt from 'bcrypt';
+import Role from './role.model.js';
+import UserRole from './userRole.js';
 
 class User extends Model {}
 
@@ -41,5 +43,21 @@ User.init(
 );
 
 User.sync();
+
+User.hasMany(UserRole, {
+  foreignKey: 'userId',
+  sourceKey: 'id',
+  as: 'roles',
+});
+UserRole.hasOne(User, {
+  foreignKey: 'id',
+  sourceKey: 'userId',
+  as: 'user',
+});
+UserRole.hasOne(Role, {
+  foreignKey: 'id',
+  sourceKey: 'roleId',
+  as: 'role',
+});
 
 export default User;
